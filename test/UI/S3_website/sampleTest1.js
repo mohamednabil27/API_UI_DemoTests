@@ -3,7 +3,7 @@ module.exports = {
   '@tags': ['smoke'],
 
   'Home → Contact → Back to Home': async (browser) => {
-    const BASE_URL = 'http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com/'; // <- put your site root
+    const BASE_URL = 'http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com/';
 
     const sel = {
       homeMarker: 'img[src="images/nav/home1g.gif"]',

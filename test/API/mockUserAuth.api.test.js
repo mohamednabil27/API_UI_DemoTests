@@ -10,8 +10,8 @@ const user = { name: 'user', email: 'user@gmail.com', password: 'user123' };
 let tokenFromRegister = '';
 let tokenFromAuth = '';
 
-let child;   // external process (preferred)
-let server;  // fallback server from app.js
+let child;   
+let server;  
 
 async function waitForServer(timeoutMs = 20000) {
   const start = Date.now();

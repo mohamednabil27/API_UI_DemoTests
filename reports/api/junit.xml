@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="11" failures="0" errors="0" time="0.886">
-  <testsuite name="mock-user-auth — happy paths" errors="0" failures="0" skipped="0" timestamp="2025-08-09T17:54:21" time="0.775" tests="11">
-    <testcase classname="mock-user-auth — happy paths POST /api/v1/users registers (docs say it returns token)" name="mock-user-auth — happy paths POST /api/v1/users registers (docs say it returns token)" time="0.025">
+<testsuites name="jest tests" tests="11" failures="0" errors="0" time="0.929">
+  <testsuite name="mock-user-auth — happy paths" errors="0" failures="0" skipped="0" timestamp="2025-08-09T18:47:28" time="0.816" tests="11">
+    <testcase classname="mock-user-auth — happy paths POST /api/v1/users registers (docs say it returns token)" name="mock-user-auth — happy paths POST /api/v1/users registers (docs say it returns token)" time="0.024">
     </testcase>
-    <testcase classname="mock-user-auth — happy paths POST /api/v1/auth authenticates and returns token" name="mock-user-auth — happy paths POST /api/v1/auth authenticates and returns token" time="0.005">
+    <testcase classname="mock-user-auth — happy paths POST /api/v1/auth authenticates and returns token" name="mock-user-auth — happy paths POST /api/v1/auth authenticates and returns token" time="0.004">
     </testcase>
-    <testcase classname="mock-user-auth — happy paths GET /api/v1/users with token returns profile" name="mock-user-auth — happy paths GET /api/v1/users with token returns profile" time="0.006">
+    <testcase classname="mock-user-auth — happy paths GET /api/v1/users with token returns profile" name="mock-user-auth — happy paths GET /api/v1/users with token returns profile" time="0.005">
     </testcase>
     <testcase classname="mock-user-auth — happy paths PATCH /api/v1/users with token updates profile" name="mock-user-auth — happy paths PATCH /api/v1/users with token updates profile" time="0.004">
     </testcase>
-    <testcase classname="mock-user-auth — happy paths DELETE /api/v1/users with token deletes user" name="mock-user-auth — happy paths DELETE /api/v1/users with token deletes user" time="0.004">
+    <testcase classname="mock-user-auth — happy paths DELETE /api/v1/users with token deletes user" name="mock-user-auth — happy paths DELETE /api/v1/users with token deletes user" time="0.003">
     </testcase>
-    <testcase classname="mock-user-auth — happy paths DELETE /api/v1/all-users with admin key clears users" name="mock-user-auth — happy paths DELETE /api/v1/all-users with admin key clears users" time="0.009">
+    <testcase classname="mock-user-auth — happy paths DELETE /api/v1/all-users with admin key clears users" name="mock-user-auth — happy paths DELETE /api/v1/all-users with admin key clears users" time="0.007">
     </testcase>
     <testcase classname="mock-user-auth — negative cases (invalid body / invalid auth) POST /api/v1/users with missing fields → should be 4xx (record actual)" name="mock-user-auth — negative cases (invalid body / invalid auth) POST /api/v1/users with missing fields → should be 4xx (record actual)" time="0.005">
     </testcase>
-    <testcase classname="mock-user-auth — negative cases (invalid body / invalid auth) POST /api/v1/auth with wrong password → 4xx" name="mock-user-auth — negative cases (invalid body / invalid auth) POST /api/v1/auth with wrong password → 4xx" time="0.004">
+    <testcase classname="mock-user-auth — negative cases (invalid body / invalid auth) POST /api/v1/auth with wrong password → 4xx" name="mock-user-auth — negative cases (invalid body / invalid auth) POST /api/v1/auth with wrong password → 4xx" time="0.003">
     </testcase>
     <testcase classname="mock-user-auth — negative cases (invalid body / invalid auth) GET /api/v1/users without Authorization → 4xx" name="mock-user-auth — negative cases (invalid body / invalid auth) GET /api/v1/users without Authorization → 4xx" time="0.002">
     </testcase>
-    <testcase classname="mock-user-auth — negative cases (invalid body / invalid auth) PATCH /api/v1/users with invalid token → 4xx" name="mock-user-auth — negative cases (invalid body / invalid auth) PATCH /api/v1/users with invalid token → 4xx" time="0.002">
+    <testcase classname="mock-user-auth — negative cases (invalid body / invalid auth) PATCH /api/v1/users with invalid token → 4xx" name="mock-user-auth — negative cases (invalid body / invalid auth) PATCH /api/v1/users with invalid token → 4xx" time="0.004">
     </testcase>
-    <testcase classname="mock-user-auth — negative cases (invalid body / invalid auth) DELETE /api/v1/all-users with WRONG admin key → 4xx" name="mock-user-auth — negative cases (invalid body / invalid auth) DELETE /api/v1/all-users with WRONG admin key → 4xx" time="0.002">
+    <testcase classname="mock-user-auth — negative cases (invalid body / invalid auth) DELETE /api/v1/all-users with WRONG admin key → 4xx" name="mock-user-auth — negative cases (invalid body / invalid auth) DELETE /api/v1/all-users with WRONG admin key → 4xx" time="0.003">
     </testcase>
   </testsuite>
 </testsuites>

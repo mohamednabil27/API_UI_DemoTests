@@ -4,7 +4,7 @@ module.exports = {
   '@tags': ['linkedin', 'e2e'],
 
   'Register flow shows security verification (POM + data)': async function (browser) {
-    const register = browser.page.linkedinRegister();
+    const register = browser.page.linkdin.linkedinRegister();
 
     // i. Open the page and verify page loaded
     register.openHome();
@@ -29,7 +29,7 @@ module.exports = {
     // // vi. Click Continue and assert security verification is shown
     register.continueAfterNames();
 
-            register.assertSecurityVerificationShown();
+    register.assertSecurityVerificationShown();
 
 
     //If you want to end explicitly:

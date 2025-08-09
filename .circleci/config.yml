@@ -33,12 +33,14 @@ jobs:
       - run:
           name: Run UI tests (Nightwatch)
           command: |
+            xvfb-run -a npm run test:ui
             # Use your existing script or direct command (both shown)
             if npm run -s test:ui; then
               echo "UI tests passed"
             else
               echo "UI tests failed" && exit 1
             fi
+            
 
       # Store UI artifacts (HTML report, screenshots)
       - store_artifacts:
