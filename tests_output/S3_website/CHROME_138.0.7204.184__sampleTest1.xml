@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="1">
+
+  <testsuite name="S3_website.sampleTest1" id="S3_website.sampleTest1"
+    errors="0" failures="0" hostname="" package="S3_website" skipped="0"
+    tests="1" time="8.496" timestamp="">
+  
+    <testcase name="Home → Contact → Back to Home" classname="S3_website.sampleTest1" time="8.491" assertions="10">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+
+  
+
+    
+
+  
+  </testsuite>
+</testsuites>
