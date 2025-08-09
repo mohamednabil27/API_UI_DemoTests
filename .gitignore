@@ -1,0 +1,34 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.lck
+
+# Env / secrets
+.env
+.env.*.local
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Test outputs
+coverage/
+.jest/
+jest-results.json
+reports/
+# ^ If your reviewer wants the HTML reports committed, remove this 'reports/' line
+#   and commit the generated files under reports/ui and reports/api.
+
+# Nightwatch
+screenshots/
+selenium-debug.log
+
+# Temp
+tmp/
+temp/
+*.tmp
