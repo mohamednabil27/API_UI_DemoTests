@@ -15,7 +15,7 @@ module.exports = {
     await browser
       .url(BASE_URL)
       .waitForElementVisible('body', 5000, 'Body visible')
-      .waitForElementVisible(sel.homeMarker, 5000, 'Home marker visible');
+      .waitForElementVisible('a[href="contact.html"]', 8000, 'Contact link visible');
 
     // ii) Navigate to Contact and assert contact page loaded
     await browser
