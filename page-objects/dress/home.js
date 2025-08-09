@@ -1,6 +1,6 @@
 // CommonJS export (works regardless of ESM setting)
 module.exports = {
-  url: 'http://automationpractice.multiformis.com',
+  url: 'https://automationpractice.multiformis.com/index.php',
   elements: {
     searchInput: '#search_query_top',
     searchButton: 'button[name="submit_search"]'
