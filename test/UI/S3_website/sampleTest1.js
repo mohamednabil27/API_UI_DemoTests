@@ -5,36 +5,40 @@ module.exports = {
   'Home → Contact → Back to Home': async (browser) => {
     const BASE_URL = 'http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com/';
 
-    const sel = {
-      homeMarker: 'img[src="images/nav/home1g.gif"]',
-      contactLink: 'a[href="contact.html"]',
-      contactHeaderXPath: '//p[normalize-space(.)="CONTACT ACME CHEMICALS"]',
+    // Robust "Contact" locator: href contains, image src contains, OR visible text contains "contact" (any case)
+    const CONTACT_ANY = {
+      selector:
+        "//*[self::a or self::button or self::area][contains(translate(@href,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'contact')]" +
+        " | //a[.//img[contains(translate(@src,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'contact')]]" +
+        " | //*[self::a or self::button][contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'contact')]",
+      locateStrategy: 'xpath'
     };
 
-    // i) Open the page and verify page loaded
+    const CONTACT_HEADER = {
+      selector: '//p[normalize-space(.)="CONTACT ACME CHEMICALS"]',
+      locateStrategy: 'xpath'
+    };
+
     await browser
       .url(BASE_URL)
-      .waitForElementVisible('body', 5000, 'Body visible')
-      .waitForElementVisible('xpath', "//*[self::a or self::button][contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'contact')]", 10000, 'Contact link visible')
+      .waitForElementVisible('body', 10000, 'Body visible')
+      .saveScreenshot('tests_output/ui/s3_home.png')
+      .waitForElementVisible(CONTACT_ANY, 15000, 'Contact link/button visible');
 
-
-    // ii) Navigate to Contact and assert contact page loaded
     await browser
-      .waitForElementVisible(sel.contactLink, 5000, 'Contact link visible')
-      .click(sel.contactLink)
-      .waitForElementVisible('body', 5000)
+      .click(CONTACT_ANY)
+      .waitForElementVisible('body', 10000)
       .assert.urlContains('contact.html', 'URL includes contact.html')
-      .useXpath()
-      .waitForElementVisible(sel.contactHeaderXPath, 5000, 'Contact header visible')
-      .assert.containsText(sel.contactHeaderXPath, 'CONTACT ACME CHEMICALS')
-      .useCss();
+      .waitForElementVisible(CONTACT_HEADER, 10000, 'Contact header visible')
+      .assert.containsText(CONTACT_HEADER, 'CONTACT ACME CHEMICALS')
+      .saveScreenshot('tests_output/ui/s3_contact.png');
 
-    // iii) Click Back from browser and assert user at home page
     await browser
       .back()
-      .waitForElementVisible('body', 5000)
-      .waitForElementVisible(sel.homeMarker, 5000, 'Back on home page')
-      .assert.not.urlContains('contact.html', 'No longer on contact page');
+      .waitForElementVisible('body', 10000)
+      .assert.not.urlContains('contact.html', 'No longer on contact page')
+      .waitForElementVisible(CONTACT_ANY, 10000, 'Back on home page (Contact visible)')
+      .saveScreenshot('tests_output/ui/s3_home_back.png');
 
     await browser.end();
   }

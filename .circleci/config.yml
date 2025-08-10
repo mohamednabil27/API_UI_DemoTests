@@ -44,8 +44,8 @@ jobs:
 
       # Store UI artifacts (HTML report, screenshots)
       - store_artifacts:
-          path: reports
-          destination: ui-reports
+          path: tests_output
+          destination: ui-artifacts
 
       # ===== API tests (Jest) =====
       - run:
