@@ -6,7 +6,6 @@ orbs:
 jobs:
   test:
     docker:
-      # Comes with Chrome/Firefox preinstalled, perfect for headless Nightwatch
       - image: cimg/node:20.16-browsers
     working_directory: ~/project
 
@@ -21,7 +20,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: npm ci
+          command: npm ci --no-audit --no-fund
 
       - save_cache:
           key: v1-deps-{{ arch }}-{{ checksum "package-lock.json" }}
@@ -31,14 +30,13 @@ jobs:
 
       # ===== UI tests (Nightwatch) =====
       - run:
-          name: Run UI tests (Nightwatch)
+          name: Run UI tests (non-headless via Xvfb, keep HTTP for S3 site)
           command: |
-            xvfb-run -a npm run test:ui \
-            --reporter=html --env chrome --open=false \
-            --chrome-arg=--disable-features=HTTPS-FirstMode \
-            --chrome-arg=--allow-running-insecure-content \
-            --chrome-arg=--ignore-certificate-errors
-            
+            xvfb-run -a npx nightwatch test/UI \
+              --reporter=html --env chrome --open=false \
+              --chrome-arg=--disable-features=HTTPS-FirstMode \
+              --chrome-arg=--allow-running-insecure-content \
+              --chrome-arg=--ignore-certificate-errors
 
       # Store UI artifacts (HTML report, screenshots)
       - store_artifacts:
@@ -49,7 +47,6 @@ jobs:
       - run:
           name: Run API tests (Jest)
           command: |
-            # If you used start-server-and-test, this will start mock-user-auth and then run Jest
             if npm run -s test:api; then
               echo "API tests passed"
             else
