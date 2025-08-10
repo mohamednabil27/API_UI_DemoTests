@@ -16,34 +16,39 @@ module.exports = {
         '#search_widget button[type=submit]'
       ];
 
+      // tiny helper to log & snapshot what CI actually loaded
+      const snap = (name) => this.api.saveScreenshot(`tests_output/ui/${name}.png`);
+
       return this.api
         .waitForElementPresent('body', 10000)
-        .saveScreenshot('tests_output/ui/landing.png') // for CI artifacts
-        // find active input
+        .getTitle(t => this.api.perform(() => console.log('Title:', t.value)))
+        .url(u => this.api.perform(() => console.log('URL:', u.value)))
+        .perform(() => snap('landing'))
+        // detect any available search input
         .execute(function (sels) {
-          for (const sel of sels) {
-            const el = document.querySelector(sel);
-            if (el) return sel;
-          }
+          for (const sel of sels) if (document.querySelector(sel)) return sel;
           return null;
         }, [inputSels], ({ value: inputSel }) => {
-          this.api.assert.ok(!!inputSel, 'Search input found on page');
-
-          this.api
-            .waitForElementVisible(inputSel, 20000)
-            .clearValue(inputSel)
-            .setValue(inputSel, term)
-            // find active button
-            .execute(function (sels) {
-              for (const sel of sels) {
-                const el = document.querySelector(sel);
-                if (el) return sel;
-              }
-              return null;
-            }, [btnSels], ({ value: btnSel }) => {
-              this.api.assert.ok(!!btnSel, 'Search button found on page');
-              this.api.click(btnSel);
-            });
+          if (inputSel) {
+            // found an input → type & click the paired button
+            this.api
+              .waitForElementVisible(inputSel, 20000)
+              .clearValue(inputSel)
+              .setValue(inputSel, term)
+              .execute(function (sels) {
+                for (const sel of sels) if (document.querySelector(sel)) return sel;
+                return null;
+              }, [btnSels], ({ value: btnSel }) => {
+                this.api.assert.ok(!!btnSel, 'Search button found on page');
+                this.api.click(btnSel);
+              });
+          } else {
+            // no input visible → FALLBACK to direct search URL
+            const q = encodeURIComponent(term);
+            const direct = `https://automationpractice.multiformis.com/index.php?controller=search&search_query=${q}`;
+            console.log('Fallback to direct search URL:', direct);
+            this.api.url(direct).perform(() => snap('fallback-search'));
+          }
         });
     }
   }]

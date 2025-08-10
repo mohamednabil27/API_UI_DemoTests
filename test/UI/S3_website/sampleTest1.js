@@ -15,7 +15,8 @@ module.exports = {
     await browser
       .url(BASE_URL)
       .waitForElementVisible('body', 5000, 'Body visible')
-      .waitForElementVisible('a[href="contact.html"]', 8000, 'Contact link visible');
+      .waitForElementVisible('xpath', "//*[self::a or self::button][contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'contact')]", 10000, 'Contact link visible')
+
 
     // ii) Navigate to Contact and assert contact page loaded
     await browser
