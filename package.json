@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:ui": "nightwatch test/UI --reporter=html --env chrome --open=false",
+        "test:ui": "nightwatch test/UI --reporter=html --env chrome --open=false --chrome-arg=--disable-features=HTTPS-FirstMode --chrome-arg=--allow-running-insecure-content --chrome-arg=--ignore-certificate-errors",
     "mock:dev": "nodemon ./node_modules/mock-user-auth/bin/www.js",
     "test:api": "start-server-and-test \"npm run mock:dev 5050\" tcp:5050 \"jest --runInBand -c jest.config.js\""
   },
