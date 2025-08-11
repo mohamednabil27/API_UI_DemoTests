@@ -1,6 +1,6 @@
 // page-objects/dress/home.js
 module.exports = {
-  url: 'https://automationpractice.multiformis.com/index.php',
+  url: 'http://automationpractice.multiformis.com/',
 
   commands: [{
     search(term) {
