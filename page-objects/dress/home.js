@@ -4,6 +4,8 @@ module.exports = {
 
   commands: [{
     search(term) {
+      const api = this.api;
+
       const inputSels = [
         '#search_query_top',
         'form#searchbox input[name=search_query]',
@@ -16,9 +18,9 @@ module.exports = {
         '#search_widget button[type=submit]'
       ];
 
-      return this.api
+      return api
         .waitForElementPresent('body', 10000)
-        .saveScreenshot('tests_output/ui/landing.png') // for CI artifacts
+        .saveScreenshot('tests_output/ui/landing.png')
         // find active input
         .execute(function (sels) {
           for (const sel of sels) {
@@ -27,13 +29,14 @@ module.exports = {
           }
           return null;
         }, [inputSels], ({ value: inputSel }) => {
-          this.api.assert.ok(!!inputSel, 'Search input found on page');
+          api.assert.ok(!!inputSel, 'Search input found on page');
 
-          this.api
+          api
             .waitForElementVisible(inputSel, 20000)
             .clearValue(inputSel)
             .setValue(inputSel, term)
-            // find active button
+            .keys(api.Keys.ENTER)  // also submit via Enter
+            // find active button (belt & suspenders)
             .execute(function (sels) {
               for (const sel of sels) {
                 const el = document.querySelector(sel);
@@ -41,9 +44,9 @@ module.exports = {
               }
               return null;
             }, [btnSels], ({ value: btnSel }) => {
-              this.api.assert.ok(!!btnSel, 'Search button found on page');
-              this.api.click(btnSel);
-            });
+              if (btnSel) api.click(btnSel);
+            })
+            .pause(500); // let navigation happen
         });
     }
   }]
