@@ -1,5 +1,3 @@
-// test/UI/Dress/search-dress.e2e.js
-const bypassInterstitial = require('../../utils/bypassInterstitial');
 
 module.exports = {
   '@tags': ['search', 'dress'],
