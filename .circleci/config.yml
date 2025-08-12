@@ -34,19 +34,18 @@ jobs:
           command: |
             mkdir -p /tmp/nw-profile
             xvfb-run -a npx nightwatch test/UI \
-            --reporter=html --env chrome --open=false --verbose \
-            --chrome-arg=--user-data-dir=/tmp/nw-profile \
-            --chrome-arg=--no-first-run \
-            --chrome-arg=--no-default-browser-check \
-            --chrome-arg=--remote-debugging-port=0 \
-            --chrome-arg=--disable-dev-shm-usage \
-            --chrome-arg=--disable-gpu \
-            --chrome-arg=--no-sandbox \
-            --chrome-arg=--disable-features=HTTPS-FirstMode,HttpsUpgrades \
-            --chrome-arg=--allow-running-insecure-content \
-            --chrome-arg=--ignore-certificate-errors \
-            --chrome-arg=--unsafely-treat-insecure-origin-as-secure=http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com
-        # Store UI artifacts (HTML report, screenshots)
+              --reporter=html --env chrome --open=false --verbose \
+              --chrome-arg=--user-data-dir=/tmp/nw-profile \
+              --chrome-arg=--no-first-run \
+              --chrome-arg=--no-default-browser-check \
+              --chrome-arg=--remote-debugging-port=0 \
+              --chrome-arg=--disable-dev-shm-usage \
+              --chrome-arg=--disable-gpu \
+              --chrome-arg=--no-sandbox \
+              --chrome-arg=--disable-features=HTTPS-FirstMode,HttpsUpgrades \
+              --chrome-arg=--allow-running-insecure-content \
+              --chrome-arg=--ignore-certificate-errors \
+              --chrome-arg=--unsafely-treat-insecure-origin-as-secure=http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com,http://automationpractice.multiformis.com        # Store UI artifacts (HTML report, screenshots)
       - store_artifacts:
           path: tests_output
           destination: ui-artifacts
