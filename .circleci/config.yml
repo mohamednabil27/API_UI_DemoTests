@@ -3,54 +3,67 @@ version: 2.1
 jobs:
   ui-and-api:
     docker:
-      - image: cimg/node:20.16           # primary container (runs npm)
-      - image: selenium/standalone-chrome:latest  # service with real Chrome
+      # Primary container (runs Node/Nightwatch/Jest)
+      - image: cimg/node:20.16
+
+      # Sidecar: real Chrome + ChromeDriver (same as you run locally)
+      - image: selenium/standalone-chrome:latest
         environment:
           SE_NODE_MAX_SESSIONS: 1
           SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
     working_directory: ~/project
+
     steps:
       - checkout
 
+      # Cache deps
       - restore_cache:
           keys:
-            - v1-deps-{{ arch }}-{{ checksum "package-lock.json" }}
-            - v1-deps-{{ arch }}-
+            - v1-npm-{{ arch }}-{{ checksum "package-lock.json" }}
+            - v1-npm-{{ arch }}-
 
       - run:
-          name: Install deps
+          name: Install dependencies
           command: npm ci
 
       - save_cache:
-          key: v1-deps-{{ arch }}-{{ checksum "package-lock.json" }}
+          key: v1-npm-{{ arch }}-{{ checksum "package-lock.json" }}
           paths:
             - ~/.npm
             - node_modules
 
       - run:
-          name: Run UI tests via remote Selenium (HTTP-friendly flags)
+          name: Wait for Selenium (Chrome) to be ready
           command: |
-            # wait for selenium
-            until (curl -s http://localhost:4444/status | grep -q '"ready":true'); do
-              echo 'Waiting for Selenium...'; sleep 0.5;
+            for i in $(seq 1 120); do
+              if curl -s http://localhost:4444/status | grep -q '"ready":true'; then
+                echo "Selenium is ready"; break
+              fi
+              echo "Waiting for Selenium..."; sleep 1
             done
+
+      # === UI tests (Nightwatch) against the Selenium sidecar ===
+      - run:
+          name: Run UI tests (Nightwatch -> remote Chrome)
+          command: |
             npx nightwatch test/UI \
               --reporter=html \
               --env chrome \
-              --open=false \
-              --verbose \
-              --webdriver-host=localhost \
-              --webdriver-port=4444 \
-              --headless \
+              --open=false --headless --verbose \
+              --webdriver-host=localhost --webdriver-port=4444 \
               --chrome-arg=--disable-features=HTTPS-FirstMode,HttpsUpgrades \
               --chrome-arg=--allow-running-insecure-content \
               --chrome-arg=--ignore-certificate-errors \
+              --chrome-arg=--disable-dev-shm-usage \
+              --chrome-arg=--no-sandbox \
+              --chrome-arg=--remote-debugging-port=0 \
               --chrome-arg=--unsafely-treat-insecure-origin-as-secure=http://automationpractice.multiformis.com,http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com
 
       - store_artifacts:
           path: tests_output
           destination: ui-artifacts
 
+      # === API tests (Jest) ===
       - run:
           name: Run API tests (Jest)
           command: npm run test:api

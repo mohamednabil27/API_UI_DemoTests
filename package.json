@@ -6,7 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:ui": "nightwatch test/UI --reporter=html --env chrome --open=false --verbose --chrome-arg=\"--user-data-dir=C:\\\\temp\\\\nw-profile\" --chrome-arg=--no-first-run --chrome-arg=--no-default-browser-check --chrome-arg=--remote-debugging-port=0 --chrome-arg=--disable-dev-shm-usage --chrome-arg=--disable-gpu --chrome-arg=--no-sandbox --chrome-arg=--disable-features=HTTPS-FirstMode,HttpsUpgrades --chrome-arg=--allow-running-insecure-content --chrome-arg=--ignore-certificate-errors --chrome-arg=\"--unsafely-treat-insecure-origin-as-secure=http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com,http://automationpractice.multiformis.com\"",
     "mock:dev": "nodemon ./node_modules/mock-user-auth/bin/www.js",
-    "test:api": "start-server-and-test \"npm run mock:dev 5050\" tcp:5050 \"jest --runInBand -c jest.config.js\""
+    "test:api": "start-server-and-test \"npm run mock:dev 5050\" tcp:5050 \"jest --runInBand -c jest.config.js\"",
+     "ui:docker:run": "nightwatch test/UI --reporter=html --env chrome --open=false --verbose --webdriver-host=localhost --webdriver-port=4444 --chrome-arg=--disable-features=HTTPS-FirstMode,HttpsUpgrades --chrome-arg=--allow-running-insecure-content --chrome-arg=--ignore-certificate-errors --chrome-arg=\"--unsafely-treat-insecure-origin-as-secure=http://automationpractice.multiformis.com,http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com\""
+
   },
   "keywords": [],
   "author": "",
