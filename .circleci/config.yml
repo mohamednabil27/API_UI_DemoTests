@@ -3,54 +3,42 @@ version: 2.1
 jobs:
   ui-and-api:
     docker:
-      # Primary container (runs Node/Nightwatch/Jest)
       - image: cimg/node:20.16
-
-      # Sidecar: real Chrome + ChromeDriver (same as you run locally)
       - image: selenium/standalone-chrome:latest
         environment:
           SE_NODE_MAX_SESSIONS: 1
           SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
     working_directory: ~/project
-
     steps:
       - checkout
 
-      # Cache deps
       - restore_cache:
           keys:
             - v1-npm-{{ arch }}-{{ checksum "package-lock.json" }}
             - v1-npm-{{ arch }}-
 
-      - run:
-          name: Install dependencies
-          command: npm ci
+      - run: npm ci
 
       - save_cache:
           key: v1-npm-{{ arch }}-{{ checksum "package-lock.json" }}
-          paths:
-            - ~/.npm
-            - node_modules
+          paths: [~/.npm, node_modules]
 
       - run:
-          name: Wait for Selenium (Chrome) to be ready
+          name: Wait for Selenium
           command: |
             for i in $(seq 1 120); do
               if curl -s http://localhost:4444/status | grep -q '"ready":true'; then
-                echo "Selenium is ready"; break
-              fi
+                echo "Selenium is ready"; break; fi
               echo "Waiting for Selenium..."; sleep 1
             done
 
-      # === UI tests (Nightwatch) against the Selenium sidecar ===
       - run:
-          name: Run UI tests (Nightwatch -> remote Chrome)
+          name: UI tests (Nightwatch -> Selenium sidecar)
           command: |
             npx nightwatch test/UI \
-              --reporter=html \
+              --config nightwatch.remote.conf.js \
               --env chrome \
               --open=false --headless --verbose \
-              --webdriver-host=localhost --webdriver-port=4444 \
               --chrome-arg=--disable-features=HTTPS-FirstMode,HttpsUpgrades \
               --chrome-arg=--allow-running-insecure-content \
               --chrome-arg=--ignore-certificate-errors \
@@ -63,9 +51,8 @@ jobs:
           path: tests_output
           destination: ui-artifacts
 
-      # === API tests (Jest) ===
       - run:
-          name: Run API tests (Jest)
+          name: API tests (Jest)
           command: npm run test:api
 
       - store_test_results:
