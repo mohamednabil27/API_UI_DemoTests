@@ -1,3 +1,4 @@
+// test/UI/linkdin/register.spec.js
 const user = require('../../../data/linkedin_user.json');
 
 module.exports = {
@@ -6,33 +7,42 @@ module.exports = {
   'Register flow shows security verification (POM + data)': async function (browser) {
     const register = browser.page.linkdin.linkedinRegister();
 
-    // i. Open the page and verify page loaded
-    register.openHome();
+    // simple numbered screenshot helper
+    let step = 1;
+    const ss = (label) => browser.saveScreenshot(`tests_output/ui/linkedin/${String(step++).padStart(2,'0')}-${label}.png`);
 
-    browser.assert.titleContains('LinkedIn'); // lightweight sanity check
+    try {
+      // i. Open the page and verify page loaded
+      register.openHome();
+      await ss('home-loaded');
 
-    // ii. Click on join Now
-    register.clickJoinNow();
+      browser.assert.titleContains('LinkedIn'); // lightweight sanity check
+      await ss('title-checked');
 
-   
-    // iii. Enter email & password
-    register.fillEmailAndPassword(user);
+      // ii. Click on join Now
+      register.clickJoinNow();
+      await ss('clicked-join-now');
 
-    // iv. Click Agree & join
-    register.submitEmailAndPassword();
+      // iii. Enter email & password
+      register.fillEmailAndPassword(user);
+      await ss('filled-email-password');
 
-    
-    // v. Enter First and Last Name
-    register.fillNames(user);
+      // iv. Click Agree & join
+      register.submitEmailAndPassword();
+      await ss('submitted-credentials');
 
-     
-    // // vi. Click Continue and assert security verification is shown
-    register.continueAfterNames();
+      // v. Enter First and Last Name
+      register.fillNames(user);
+      await ss('filled-names');
 
-    register.assertSecurityVerificationShown();
+      // vi. Continue & assert security verification is shown
+      register.continueAfterNames();
+      await ss('after-continue');
 
-
-    //If you want to end explicitly:
-    await browser.end();
+      register.assertSecurityVerificationShown();
+      await ss('security-verification-visible');
+    } finally {
+      await browser.end(); // will still run even if an assertion fails
+    }
   }
 };
