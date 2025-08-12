@@ -1,0 +1,40 @@
+services:
+  selenium:
+    image: selenium/standalone-chrome:latest   # or pin e.g. 4.23.0
+    shm_size: "2gb"
+    environment:
+      SE_NODE_MAX_SESSIONS: 1
+      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
+    # If you want VNC to watch the browser, uncomment:
+    # ports:
+    #   - "7900:7900"  # noVNC
+
+  e2e:
+    image: node:20
+    working_dir: /project
+    depends_on:
+      - selenium
+    volumes:
+      - .:/project
+    environment:
+      CI: "true"
+    command: >
+      sh -lc "
+      npm ci &&
+      # wait for selenium to be ready
+      until (curl -s http://selenium:4444/status | grep -q '\"ready\":true'); do
+        echo 'Waiting for Selenium...'; sleep 0.5;
+      done &&
+      npx nightwatch test/UI
+        --reporter=html
+        --env chrome
+        --open=false
+        --verbose
+        --webdriver-host=selenium
+        --webdriver-port=4444
+        --headless
+        --chrome-arg=--disable-features=HTTPS-FirstMode,HttpsUpgrades
+        --chrome-arg=--allow-running-insecure-content
+        --chrome-arg=--ignore-certificate-errors
+        --chrome-arg=--unsafely-treat-insecure-origin-as-secure=http://automationpractice.multiformis.com,http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com
+      "

@@ -1,26 +1,25 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@5.2.0
-
 jobs:
-  test:
+  ui-and-api:
     docker:
-      - image: cimg/node:20.16-browsers
+      - image: cimg/node:20.16           # primary container (runs npm)
+      - image: selenium/standalone-chrome:latest  # service with real Chrome
+        environment:
+          SE_NODE_MAX_SESSIONS: 1
+          SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
     working_directory: ~/project
-
     steps:
       - checkout
 
-      # Cache node_modules
       - restore_cache:
           keys:
             - v1-deps-{{ arch }}-{{ checksum "package-lock.json" }}
             - v1-deps-{{ arch }}-
 
       - run:
-          name: Install dependencies
-          command: npm ci --no-audit --no-fund
+          name: Install deps
+          command: npm ci
 
       - save_cache:
           key: v1-deps-{{ arch }}-{{ checksum "package-lock.json" }}
@@ -28,43 +27,37 @@ jobs:
             - ~/.npm
             - node_modules
 
-      # ===== UI tests (Nightwatch) =====
       - run:
-          name: Run UI tests (non-headless via Xvfb, keep HTTP for S3 site)
+          name: Run UI tests via remote Selenium (HTTP-friendly flags)
           command: |
-            mkdir -p /tmp/nw-profile
-            xvfb-run -a npx nightwatch test/UI \
-              --reporter=html --env chrome --open=false --verbose \
-              --chrome-arg=--user-data-dir=/tmp/nw-profile \
-              --chrome-arg=--no-first-run \
-              --chrome-arg=--no-default-browser-check \
-              --chrome-arg=--remote-debugging-port=0 \
-              --chrome-arg=--disable-dev-shm-usage \
-              --chrome-arg=--disable-gpu \
-              --chrome-arg=--no-sandbox \
+            # wait for selenium
+            until (curl -s http://localhost:4444/status | grep -q '"ready":true'); do
+              echo 'Waiting for Selenium...'; sleep 0.5;
+            done
+            npx nightwatch test/UI \
+              --reporter=html \
+              --env chrome \
+              --open=false \
+              --verbose \
+              --webdriver-host=localhost \
+              --webdriver-port=4444 \
+              --headless \
               --chrome-arg=--disable-features=HTTPS-FirstMode,HttpsUpgrades \
               --chrome-arg=--allow-running-insecure-content \
               --chrome-arg=--ignore-certificate-errors \
-              --chrome-arg=--unsafely-treat-insecure-origin-as-secure=http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com,http://automationpractice.multiformis.com        # Store UI artifacts (HTML report, screenshots)
+              --chrome-arg=--unsafely-treat-insecure-origin-as-secure=http://automationpractice.multiformis.com,http://s3-design-sample-site.s3-website-us-west-2.amazonaws.com
+
       - store_artifacts:
           path: tests_output
           destination: ui-artifacts
 
-      # ===== API tests (Jest) =====
       - run:
           name: Run API tests (Jest)
-          command: |
-            if npm run -s test:api; then
-              echo "API tests passed"
-            else
-              echo "API tests failed" && exit 1
-            fi
+          command: npm run test:api
 
-      # Publish JUnit XML for CircleCI test summary (from Jest)
       - store_test_results:
           path: reports/api
 
-      # Store API artifacts (HTML report)
       - store_artifacts:
           path: reports/api
           destination: api-reports
@@ -73,4 +66,4 @@ workflows:
   version: 2
   ci:
     jobs:
-      - test
+      - ui-and-api
