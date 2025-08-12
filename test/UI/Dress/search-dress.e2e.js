@@ -6,7 +6,7 @@ module.exports = {
     const home = browser.page.dress.home();
     const results = browser.page.dress.searchResults();
 
-    // Queue Nightwatch commands (do NOT await)
+   
     home.navigate().search('dress');
 
     results

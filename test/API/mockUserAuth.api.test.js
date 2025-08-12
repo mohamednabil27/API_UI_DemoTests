@@ -28,10 +28,10 @@ async function waitForServer(timeoutMs = 20000) {
 
 // test/API/mockUserAuth.api.test.js
 beforeAll(async () => {
-  await waitForServer(20000); // same helper you already have
+  await waitForServer(20000); 
 }, 30000);
 
-afterAll(() => {}); // nothing to kill; start-server-and-test will stop it
+afterAll(() => {}); 
 
 
 afterAll(() => {
