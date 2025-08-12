@@ -11,11 +11,6 @@ module.exports = {
     // Queue Nightwatch commands (do NOT await)
     home.navigate().search('dress');
 
-    // If you still want the interstitial bypass, run it in the queue
-    browser.perform(async () => {
-      await bypassInterstitial(browser);
-    });
-
     results
       .waitForElementVisible('@center', 10000)
       .assertHasResults()
