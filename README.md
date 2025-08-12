@@ -1,6 +1,7 @@
 # API_UI_DemoTests
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mohamednabil27/API_UI_DemoTests/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mohamednabil27/API_UI_DemoTests/tree/ci-setup)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mohamednabil27/API_UI_DemoTests/tree/ci-setup.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mohamednabil27/API_UI_DemoTests/tree/ci-setup)
+
 
 NightwatchJS UI automation + Jest API tests, wired to run locally and in CircleCI.  
 Repo: https://github.com/mohamednabil27/API_UI_DemoTests
